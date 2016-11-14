@@ -1,0 +1,9 @@
+4. d) magiškoji komanda:
+select b.*, 
+group_concat(DISTINCT a.name ORDER BY a.name DESC SEPARATOR ', ') 
+from Books b 
+inner join authors_books ab on b.bookId = ab.bookId 
+inner join Authors a on ab.authorId = a.authorId 
+group by b.BookId;
+
+
