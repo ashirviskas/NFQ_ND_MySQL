@@ -1,4 +1,83 @@
-4. d) magiškoji komanda:
+Pratybos
+1. Sukurkite duomenų bazę;
+
+mysql> create database Books;
+
+2. Suimportuokite paruoštą duomenų bazės prototipą.
+
+shell> mysql -u root -p NFQ < Books.sql
+
+3. Atlikite šiuos veiksmus:
+a) Papildykite autorių lentelę įrašais.
+
+mysql> insert into `Authors` (`name`) VALUES ('Richard Bach');
+
+b) Papildykite knygų lentelę, įrašais apie knygas, kurių autorius įrašėte prieš tai.
+
+mysql> insert into `Books` (`authorId`, `title`, `year`) VALUES (8, 'One', '2008');
+
+c) Išrinkite knygų informaciją prijungdami autorius iš autorių lentelės.
+
+mysql> select `Authors`.name, `Books`.title FROM `Authors`, `Books` where `Authors`.authorId=`Books`.authorId;
+
+d) Pakeiskite vienos knygos autorių į kitą.
+mysql> UPDATE `Books` 
+           SET authorId=7
+           WHERE bookId=4;
+
+e) Suskaičiuokite kiek knygų kiekvieno autoriaus yra duomenų bazėje (įtraukdami autorius kurie neturi 
+knygų, bei neitraukdami šių autorių).
+
+
+– Neitraukiame autoriu be knygu --
+mysql> SELECT `Authors`.name, COUNT(*) FROM `Authors`, `Books` WHERE `Authors`.authorId=`Books`.authorId GROUP BY `Authors`.name;
+
+– Itraukiame autorius be knygu --
+mysql> SELECT `Authors`.name, COUNT(`Books`.authorId) FROM `Authors` LEFT JOIN `Books` ON `Authors`.authorId=`Books`.authorId GROUP BY `Authors`.name;
+
+f) Pašalinkite jūsų suvestus autorius.
+
+mysql> DELETE FROM `Authors` WHERE `Authors`.name=('Richard Bach');
+
+g) Pašalinkite knygas, kurios neturi autorių.
+
+mysql> DELETE FROM `Books` WHERE `Books`.authorId IS NULL;
+        
+4. Papildykite duomenų bazę kad būtų galima:
+
+a) Suskirstyti knygas į žanrus.
+
+alter table Books add genre varchar(25);
+
+
+b) Knygos gali turėti vieną ir daugiau autorių.
+
+create table authors_books(
+bookId INT(6) UNSIGNED,
+authorId INT(6) UNSIGNED)
+
+c) Sutvarkyti duomenų bazės duomenis, jei reikia papildykite naujais.
+
+insert into 'authors_books' ('bookId') select 'bookId' from 'Books';
+insert into 'authors_books' ('authorId') select 'authorId' from 'Books';
+
+insert into authors_books (bookId, authorId)
+values(1,4);
+
+alter table Books drop authorId;
+
+alter table Books drop author_name;
+
+update Books
+set genre = "Programming"
+where bookId < 9;
+update Books set genre = "Programming" where bookId < 9;
+
+update Books set genre = "Fiction" where bookId = 9;
+
+
+d) Išrinkite visas knygas su jų autoriais. (autorius, jei jų daugiau nei veinas atskirkite kableliais)
+
 select b.*, 
 group_concat(DISTINCT a.name ORDER BY a.name DESC SEPARATOR ', ') 
 from Books b 
@@ -6,4 +85,16 @@ inner join authors_books ab on b.bookId = ab.bookId
 inner join Authors a on ab.authorId = a.authorId 
 group by b.BookId;
 
+
+e) Papildykite knygų lentelę, kad galetumėte išsaugoti orginalų knygos pavadinimą. (Pavadinime išsaugokite, lietuviškas raides kaip ą,ė,š ir pan.)
+
+alter table Books add original_name NVARCHAR(45);
+
+update Books set original_name = 'Programavimas FŠarpu 3.0 antroji edicija' where bookId = 1;
+select * from Books;
+update Books set original_name = 'Reguliarių išraiškų receptai, antroji edicija' where bookId = 2;
+update Books set original_name = 'Pirma galva į netvorkingą' where bookId = 3;
+update Books set original_name = 'Menas vienu metu vykdomų dalykų' where bookId = 4;
+update Books set original_name = '97 Dalykai kiekvienam programeriui' where bookId = 5;
+update Books set original_name = 'Vienas' where bookId = 9;
 
