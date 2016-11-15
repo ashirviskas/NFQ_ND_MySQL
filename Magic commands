@@ -91,7 +91,6 @@ e) Papildykite knygų lentelę, kad galetumėte išsaugoti orginalų knygos pava
 alter table Books add original_name NVARCHAR(45);
 
 update Books set original_name = 'Programavimas FŠarpu 3.0 antroji edicija' where bookId = 1;
-select * from Books;
 update Books set original_name = 'Reguliarių išraiškų receptai, antroji edicija' where bookId = 2;
 update Books set original_name = 'Pirma galva į netvorkingą' where bookId = 3;
 update Books set original_name = 'Menas vienu metu vykdomų dalykų' where bookId = 4;

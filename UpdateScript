@@ -1,0 +1,35 @@
+insert into `Authors` (`name`) VALUES ('Richard Bach');
+
+insert into `Books` (`authorId`, `title`, `year`) VALUES (8, 'One', '2008');
+
+
+mysql> select `Authors`.name, `Books`.title FROM `Authors`, `Books` where `Authors`.authorId=`Books`.authorId;
+
+mysql> UPDATE `Books` 
+           SET authorId=7
+           WHERE bookId=4;
+
+mysql> DELETE FROM `Authors` WHERE `Authors`.name=('Richard Bach');
+mysql> DELETE FROM `Books` WHERE `Books`.authorId IS NULL;
+alter table Books add genre varchar(25);
+create table authors_books(
+bookId INT(6) UNSIGNED,
+authorId INT(6) UNSIGNED)
+insert into 'authors_books' ('bookId') select 'bookId' from 'Books';
+insert into 'authors_books' ('authorId') select 'authorId' from 'Books';
+insert into authors_books (bookId, authorId)
+values(1,4);
+alter table Books drop authorId;
+alter table Books drop author_name;
+update Books
+set genre = "Programming"
+where bookId < 9;
+update Books set genre = "Programming" where bookId < 9;
+update Books set genre = "Fiction" where bookId = 9;
+alter table Books add original_name NVARCHAR(45);
+update Books set original_name = 'Programavimas FŠarpu 3.0 antroji edicija' where bookId = 1;
+update Books set original_name = 'Reguliarių išraiškų receptai, antroji edicija' where bookId = 2;
+update Books set original_name = 'Pirma galva į netvorkingą' where bookId = 3;
+update Books set original_name = 'Menas vienu metu vykdomų dalykų' where bookId = 4;
+update Books set original_name = '97 Dalykai kiekvienam programeriui' where bookId = 5;
+update Books set original_name = 'Vienas' where bookId = 9;
