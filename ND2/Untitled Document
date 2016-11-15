@@ -1,0 +1,7 @@
+iteratorius. implementinti. Visą šitą pasidaryti ir turi veikti ant galutinės duombazės. sąraše turi būti išvedami knygos pavadinimas, autoriai. Puslapš kraunant neturi būti daugiau, nei viena užklausa. Visa šita pateikti nuoroda į savo asmeninį github'ą nd3 folderiuką. Iki pirmadienio vidurnakčio.
+
+Dėl pirmo:
+su numeriukais ir queries, update script ir dump.
+
+ND:
+Implementinam active record DDD details ir list'ą. Listo atveju klasė turėtų būti iteratorius. Duomenys turi būti selectinami iš galutinės duombazės. Sąraše turi matytis knygos pavadinimas ir visi autoriai. Turi būti ne daugiau, nei viena užklausa per visą puslapį. Nuoroda į github'ą.
