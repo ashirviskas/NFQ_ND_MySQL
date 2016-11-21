@@ -12,6 +12,7 @@ class Book
     private $year;
     private $genre;
     private $bookId;
+    private $authors;
 
     /**
      * @return mixed
@@ -19,6 +20,24 @@ class Book
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAuthors()
+    {
+        return $this->authors;
+    }
+
+    /**
+     * @param mixed $authors
+     * @return Book
+     */
+    public function setAuthors($authors)
+    {
+        $this->authors = $authors;
+        return $this;
     }
 
     /**
@@ -83,25 +102,4 @@ class Book
         $this->genre = $genre;
         return $this;
     }
-    public function load($id)
-    {
-        $mysqli = new mysqli("127.0.0.1", "root", "just", "NFQ", 3306);
-        if ($mysqli->connect_errno) {
-            echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-        }
-        echo $mysqli->host_info . "\n";
-        $BookID = $_GET['id'];
-        $sql = "SELECT * FROM Books WHERE bookId=$BookID";
-        $ressult = $mysqli->query($sql);
-        $result = $ressult ->fetch_assoc();
-
-        //var_dump($result);
-
-        $this->year=$result['year'];
-        $this->name=$result['title'];
-        $this->bookId=$result['bookId'];
-        $this->genre=$result['genre'];
-    }
-
-
 }
