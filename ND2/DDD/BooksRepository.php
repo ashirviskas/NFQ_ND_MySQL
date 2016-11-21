@@ -8,41 +8,37 @@
  */
 class BooksRepository
 {
-
-    public function GetById($id)
+    private $connection;
+    public function __construct($connection)
     {
-            $mysqli = new mysqli("127.0.0.1", "root", "just", "NFQ", 3306);
-            if ($mysqli->connect_errno) {
-            echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-            }
-            echo $mysqli->host_info . "\n";
+        $this->connection = $connection;
+    }
 
-            $sql = "SELECT * FROM Books WHERE bookId=$id";
-            $ressult = $mysqli->query($sql);
-            $result = $ressult ->fetch_assoc();
-            $book = new Book();
-            //var_dump($result);
+    public function getById($id){
 
-            $book->setYear($result['year']);
-            $book->setName($result['title']);
-            $book->setBookId($result['bookId']);
-            $book->setGenre($result['genre']);
-
+        $res = $this->connection->query('SELECT `b`.*, 
+group_concat(DISTINCT a.name ORDER BY a.name DESC SEPARATOR \', \') as author
+from Books b 
+inner join authors_books ab on b.bookId = ab.bookId 
+inner join Authors a on ab.authorId = a.authorId 
+        WHERE `b`.`bookId`='. $id .'
+        GROUP BY `b`.`BookId`;');
+        $row = $res->fetch_assoc();
+        $book = new Book();
+        $book->setBookId($row['bookId']);
+        $book->setName($row['title']);
+        $book->setGenre($row['genreId']);
+        $book->setYear($row['year']);
+        $book->setAuthors($row['author']);
         return $book;
-
     }
     public function getAll()
     {
-        $mysqli = new mysqli("127.0.0.1", "root", "just", "NFQ", 3306);
-        if ($mysqli->connect_errno) {
-            echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-        }
-        echo $mysqli->host_info . "\n";
 
-        $sql = "SELECT bookId, title, year FROM Books";
-        $result = $mysqli->query($sql);
+        $sql = "SELECT *  FROM Books";
+        $result = $this->connection->query($sql);
         $list = array();
-        foreach($result as $row)
+        while ($row = $result->fetch_assoc() )
         {
             $book = new Book();
 
@@ -50,7 +46,35 @@ class BooksRepository
             $book->setName($row['title']);
             $book->setBookId($row['bookId']);
             $book->setGenre($row['genre']);
+            $book->setAuthors($row['author']);
             $list->push($book);
+
+        }
+        return $list;
+    }
+    public function getBooksWithAuthors()
+    {
+
+        $result = $this->connection->query('select b.*, 
+group_concat(DISTINCT a.name ORDER BY a.name DESC SEPARATOR \', \') as author
+from Books b 
+inner join authors_books ab on b.bookId = ab.bookId 
+inner join Authors a on ab.authorId = a.authorId 
+group by b.BookId;');
+
+
+        $list = array();
+        while ($row = $result->fetch_assoc()) {
+            $book = new Book();
+            //echo $row['bookId'];
+            //echo $row["group_concat(DISTINCT a.name ORDER BY a.name DESC SEPARATOR ', ')"];
+            $book->setYear($row['year']);
+            $book->setName($row['title']);
+            $book->setBookId($row['bookId']);
+            $book->setGenre($row['genre']);
+            $book->setAuthors($row['author']);
+
+            $list[]=$book;
 
         }
         return $list;

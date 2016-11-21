@@ -4,10 +4,10 @@
 include 'Book.php';
 include 'database.php';
 
-$database = new database();
+$books = Book::getBooksWithAuthors();
 echo "<table>";
 echo "<th>Book Title</th><th>Authors</th>";
-foreach ($database->getBooksWithAuthors() as $book)
+foreach ($books as $book)
 {
     echo "<tr>";
     echo "<td>" .$book->getName() . "</td>";
