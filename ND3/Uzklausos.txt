@@ -77,4 +77,19 @@ call populate (1000);
 
 42,54 sec
 
+Tada 
 
+insert into Materials (name,unit,code,price,cost) values 
+('Pavad0','kg',7,14,15),
+('Pavad0','kg',7,14,15),
+('Pavad0','kg',7,14,15),
+.
+.
+.
+('Pavad0','kg',7,14,15),
+('Pavad0','kg',7,14,15),
+('Pavad0','kg',7,14,15)
+
+1000 kartų:
+
+0,397 sek.
