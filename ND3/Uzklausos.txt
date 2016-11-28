@@ -1,0 +1,80 @@
+3 SELECT'ai
+
+išrinkti kiekvienam technikui, kurias paslaugas jis atlikinėjo:
+
+
+select jr.kkTechnicianId, 
+group_concat(DISTINCT s.shortName ORDER BY s.shortName DESC SEPARATOR ', ') 
+from JobsRegister jr 
+inner join JobsRegister_Services jrs on jr.jobsRegisterId = jrs.JobsRegisterId 
+inner join Services s on jrs.serviceId = s.serviceId 
+group by jr.kkTechnicianId;
+
+124 rows in 1.46sec
+
+index on jr.jobsRegisterId, jrs.JobsRegisterId, jrs.serviceId, s.serviceId, jr.kkTechnicianId, s.shortName 
+
+124 rows in 4,73sec
+
+
+
+select shortname, name from Services;
+
+Išrenka kiekvieno darbo medžiagų kainas.
+
+select jr.jobsRegisterId, SUM(jrm.count*m.price)
+from JobsRegister jr
+inner join JobsRegister_Materials jrm on jr.jobsRegisterId=jrm.jobsRegisterId
+inner join Materials m on m.materialId=jrm.materialId
+group by jr.jobsRegisterId;
+
+324268 rows in set (1,81 sec)
+
+Suskaičiuoja, kiek kiekviena medžiaga buvo pirkta visuose darbuose.
+
+select m.name, COUNT(jrm.materialId)
+from Materials m
+inner join JobsRegister_Materials jrm on m.materialId=jrm.materialId
+group by m.name;
+
+2 UPDATE'ai:
+
+Prideda medžiagų kainą į JobsRegister_Materials lentelę
+
+Be Join
+
+alter table JobsRegister_Materials add column cost DOUBLE;
+
+
+UPDATE JobsRegister_Materials jrm, (SELECT materialId, sum(cost)  as mysum
+                   FROM Materials GROUP BY materialId
+) as ss
+
+  SET jrm.cost = ss.mysum*jrm.count
+  WHERE jrm.materialId = ss.materialId;
+
+Query OK, 457039 rows affected (2,74 sec)
+Rows matched: 555731  Changed: 457039
+
+Su Join:
+
+  UPDATE JobsRegister_Materials jrm 
+   JOIN Materials m ON jrm.materialId = m.materialId  
+   SET jrm.cost =m.cost*jrm.count; 
+
+Insert'inimai:
+
+create procedure populate (in num int)
+begin
+declare i int default 0;
+while i < num do
+insert into Materials (name,unit,code,price,cost) values ('Pavad0','kg',7,14,15);
+set i = i + 1;
+end while;
+end //
+
+call populate (1000);
+
+42,54 sec
+
+
